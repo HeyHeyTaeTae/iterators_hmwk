@@ -16,12 +16,16 @@ var coupons = [
 ];
 
 var $entries, 
-    $subTotal;
+    $subTotal,
+    $salesTax,
+    $total;
 
 $(document).ready(function(){
 
    $entries = $("#entries");
    $subTotal = $('#subtotal');
+   $salesTax = $('#salestax');
+   $total = $('#total');
 
   myUtils.myEach(line_items, function(v,i){
     addItem(v.price, v.description, v.qty);
@@ -45,7 +49,31 @@ function addItem(price, title, quantity) {
 }
 
 function updateSubTotal() {
-// Refactor this using our helper functions :D
-  var subTotalPrice = 0; // !! That won't do! Calculate the actual subtotal.
-  $subTotal.text("$" + price); 
+  
+var subTotalPrice = 0;
+
+subTotalPrice = myUtils.myReduce(line_items, function(value, nextValue){
+    return value + (nextValue.price * nextValue.qty);
+  })
+
+  $subTotal.text("$" + subTotalPrice); 
+  updateSalesTax(subTotalPrice);
 }
+
+function updateSalesTax(subTotalPrice) {
+  var salesTax = subTotalPrice * .0725;
+  $salesTax.text("$" + salesTax);
+  updatedTotal(subTotalPrice, salesTax);
+}
+
+function updatedTotal(subTotalPrice, salesTax) {
+  var total = subTotalPrice + Math.round(salesTax);
+  $total.text("$" + total);
+}
+
+function sortReceipt() {
+  var receipt = myUtils.myEach(line_items, function(val) {
+    val.description
+  }
+}
+myUtils.myEach.sort(line_items);
